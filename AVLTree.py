@@ -91,6 +91,72 @@ class AVLTree(object):
     """
 
     def insert(self, key, val):
+        if not self.root.is_real_node():
+            new_node = AVLNode(key, val)
+            new_node.left = self.virtual_node
+            new_node.right = self.virtual_node
+            new_node.parent = None
+            new_node.height = 0
+            self.root = new_node
+            return new_node, 1, 0, 0
+        
+        parent = None
+        node = self.root
+        search_time = 0
+        rotations=0
+        height_changes=0
+        while node is not None and node.is_real_node():
+            parent = node
+            search_time += 1 
+            if key < node.key:
+                node = node.left
+            else:
+                node = node.right
+        search_time += 2
+        
+        new_node = AVLNode(key, val)
+        new_node.left = self.virtual_node
+        new_node.right = self.virtual_node
+        new_node.parent = parent 
+        new_node.height = 0
+
+        if parent==None:
+            self.root=new_node
+        elif key< parent.key:
+            parent.left=new_node
+        else:
+            parent.left=new_node
+        if not self.is_avl:
+            return new_node, search_time, 0,0
+        
+        curr=parent
+        while curr is not None and curr.is_real_node():
+            old_height=curr.height
+            new_height=max(curr.left.height, curr.right.height)+1
+            bf=curr.left.height-curr.right.height
+            
+            if abs(bf)<2:
+                if old_height==new_height:
+                    break
+                else:
+                    curr.height=new_height
+                    height_changes+=1
+                    curr=curr.parent
+            else:
+                if bf==2:
+                    child_bf=curr.left.left.height-curr.left.right.height
+                    if child_bf>=0:
+                        self.right_rotation(curr)
+                        rotations+=1
+                    else:
+                        self.left_rotation(curr.left)
+                        self.right_rotation(curr)
+                        rotations+=2
+                else:
+                    child_bf=curr.right.left.height-curr.ri
+            
+            
+        
         return None, -1, -1, -1
 
     """deletes node from the dictionary
