@@ -100,7 +100,81 @@ class AVLTree(object):
     """
 
     def delete(self, node):
-        parent = node.parent
+        # if node is a leave
+        if node.left.key is None and node.right.key is None:
+            # if node is root
+            if node.parent is None:
+                self.root = None
+            else: 
+                if node.parent.left == node:
+                    node.parent.left = self.virtual_node
+                else:
+                    node.parent.right = self.virtual_node
+                del node
+
+                # if tree is AVL, do rotations and height updates
+                if self.is_avl:
+                    A = node.parent
+                    A_BF = A.left.height - A.right.height
+                    while A != self.root:
+                        A_left_son_BF = A.left.left.height - A.left.right.height
+                        A_right_son_BF = A.right.left.height - A.right.right.height
+                        if A_BF == 2:
+                            if A_left_son_BF == -1:
+                                self.left_rotation(A.left)
+                                self.right_rotation(A)
+                            else: 
+                                self.right_rotation(A)
+                        if A_BF == -2:
+                            if A_right_son_BF == 1:
+                                self.right_rotation(A.right)
+                                self.left_rotation(A)
+                            else: 
+                                self.left_rotation(A)
+        # if node has one son
+
+        # if node has 2 sons
+
+
+
+    def left_rotation(self, A):
+        B = A.right
+        # if A is root
+        if A.parent is None: 
+            self.root = B
+        elif A.parent.left == A: # A is left son
+            A.parent.left = B
+        else: # A is right son
+            A.parent.right = B
+        A.right = B.left
+        B.left = A
+
+        # update heights
+        A.height = max(A.left.height, A.right.height) + 1
+        B.height = max(B.left.height, B.right.height) + 1
+
+    def right_rotation(self, A): # A BF is +2
+        B = A.left
+        # if A is root
+        if A.parent is None: 
+            self.root = B
+        elif A.parent.left == A: # A is left son
+            A.parent.left = B
+        else: # A is right son
+            A.parent.right = B
+        A.left = B.right
+        B.right = A
+
+        # update heights
+        A.height = max(A.left.height, A.right.height) + 1
+        B.height = max(B.left.height, B.right.height) + 1
+
+            
+                
+
+
+                    
+
 
         return
 
