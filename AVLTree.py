@@ -174,42 +174,109 @@ class AVLTree(object):
     """
 
     def delete(self, node):
+
         # if node is a leave
         if node.left.key is None and node.right.key is None:
             # if node is root
             if node.parent is None:
                 self.root = None
+                del node
             else: 
-                if node.parent.left == node:
-                    node.parent.left = self.virtual_node
+                parent = node.parent
+                if parent.left == node: # node is left son
+                    parent.left = self.virtual_node
                 else:
-                    node.parent.right = self.virtual_node
+                    parent.right = self.virtual_node
                 del node
 
                 # if tree is AVL, do rotations and height updates
                 if self.is_avl:
-                    A = node.parent
-                    A_BF = A.left.height - A.right.height
-                    while A != self.root:
-                        A_left_son_BF = A.left.left.height - A.left.right.height
-                        A_right_son_BF = A.right.left.height - A.right.right.height
-                        if A_BF == 2:
-                            if A_left_son_BF == -1:
-                                self.left_rotation(A.left)
-                                self.right_rotation(A)
-                            else: 
-                                self.right_rotation(A)
-                        if A_BF == -2:
-                            if A_right_son_BF == 1:
-                                self.right_rotation(A.right)
-                                self.left_rotation(A)
-                            else: 
-                                self.left_rotation(A)
-        # if node has one son
+                    self.balance_up(parent)
+        
+        # if node has one right son
+        if node.left.key is None and node.right.key is not None:
+            if node.parent is None: # if node is root
+                self.root = node.right
+                del node
+            else:
+                parent = node.parent
+                if parent.left == node: # node is left son
+                    parent.left = node.right
+                else: # node is right son
+                    parent.right = node.right
+                del node
+
+                # if tree is AVL, do rotations and height updates
+                if self.is_avl:
+                    self.balance_up(parent)
+
+        # if node has one left son           
+        if node.left.key is not None and node.right.key is None:
+            if node.parent is None: # if node is root
+                self.root = node.left
+                del node
+            else:
+                parent = node.parent
+                if parent.left == node: # node is left son
+                    parent.left = node.left
+                else: # node is right son
+                    parent.right = node.left
+                del node
+
+                # if tree is AVL, do rotations and height updates
+                if self.is_avl:
+                    self.balance_up(parent) 
+                    
 
         # if node has 2 sons
+        if node.left.key is not None and node.right.key is not None:
+            successor = successor = node.right
+            while successor.left.key is not None:
+                successor = successor.left
+
+            node.key = successor.key
+            node.value = successor.value
+
+            successor_parent = successor.parent 
+            # delete the successor node, which has one right son at most
+            if successor.right.key is not None: # successor has one right son,
+                                                # and successor is the left son of its parent, since it is the leftmost node in the right subtree of node
+                successor.parent.left = successor.right
+                del successor
+
+            if successor.right.key is None: # successor is a leaf
+                successor.parent.left = self.virtual_node
+                del successor
+                
+            # if tree is AVL, do rotations and height updates
+            if self.is_avl:    
+                self.balance_up(successor_parent)
 
 
+
+        
+    def balance_up(self, A, until_root = True):
+        while A != self.root:
+            A_BF = A.left.height - A.right.height
+
+            if (A_BF in [-1,0,1]) and not until_root: # A BF is ok and we don't want to continue up to root
+                return
+            
+            A_left_son_BF = A.left.left.height - A.left.right.height
+            A_right_son_BF = A.right.left.height - A.right.right.height
+            if A_BF == 2:
+                if A_left_son_BF == -1:
+                    self.left_rotation(A.left)
+                    self.right_rotation(A)
+                else: 
+                    self.right_rotation(A)
+            if A_BF == -2:
+                if A_right_son_BF == 1:
+                    self.right_rotation(A.right)
+                    self.left_rotation(A)
+                else: 
+                    self.left_rotation(A)
+            A = A.parent
 
     def left_rotation(self, A):
         B = A.right
