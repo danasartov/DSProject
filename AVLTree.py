@@ -120,12 +120,10 @@ class AVLTree(object):
         new_node.parent = parent 
         new_node.height = 0
 
-        if parent==None:
-            self.root=new_node
-        elif key< parent.key:
+        if key< parent.key:
             parent.left=new_node
         else:
-            parent.left=new_node
+            parent.right=new_node
         if not self.is_avl:
             return new_node, search_time, 0,0
         
@@ -153,7 +151,17 @@ class AVLTree(object):
                         self.right_rotation(curr)
                         rotations+=2
                 else:
-                    child_bf=curr.right.left.height-curr.ri
+                    child_bf=curr.right.left.height-curr.right.right.height
+                    if child_bf<=0:
+                        self.left_rotation(curr)
+                        rotations+=1
+                    else:
+                        self.right_rotation(curr.right)
+                        self.left_rotation(curr)
+                        rotations+=2
+                break
+        return new_node, search_time,rotations,height_changes
+        
             
             
         
