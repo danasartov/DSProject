@@ -1,11 +1,11 @@
 # id1:
 # name1:
 # username1:
-# id2:
+# id2: 
 # name2:
 # username2:
 
-
+ 
 """A class representing a node in an AVL tree"""
 
 
@@ -91,7 +91,7 @@ class AVLTree(object):
     """
 
     def insert(self, key, val):
-        if not self.root.is_real_node():
+        if self.root is None:
             new_node = AVLNode(key, val)
             new_node.left = self.virtual_node
             new_node.right = self.virtual_node
@@ -105,7 +105,7 @@ class AVLTree(object):
         search_time = 0
         rotations=0
         height_changes=0
-        while node is not None and node.is_real_node():
+        while node.is_real_node():
             parent = node
             search_time += 1 
             if key < node.key:
@@ -165,7 +165,7 @@ class AVLTree(object):
             
             
         
-        return None, -1, -1, -1
+        
 
     """deletes node from the dictionary
 
@@ -259,10 +259,19 @@ class AVLTree(object):
     """
 
     def avl_to_list(self):
-        return None
+        result_lst=[]
+        self.order_rec(self.root,result_lst)
+        return result_lst
+    
+    def order_rec(self,node,result_list):
+        if node is None or not node.is_real_node():
+            return
+        
+        self.order_rec(node.left,result_list)
+        result_list.append((node.key,node.value))
+        self.order_rec(node.right,result_list)
 
     """returns the number of items in dictionary 
-
     @rtype: int
     @returns: the number of items in dictionary 
     """
@@ -277,7 +286,7 @@ class AVLTree(object):
     """
 
     def get_root(self):
-        return None
+        return self.root
 
     """returns the height of the tree
 
@@ -286,4 +295,16 @@ class AVLTree(object):
         """
 
     def get_height(self):
-        return -1
+        if self.root() is None:
+            return -1
+        if self.is_avl:
+            return self.root().height
+        return self.get_height_rec(self.root)
+        
+
+    def get_height_rec(self, node):
+        if not node.is_real_node():
+            return -1
+        left_h= self.get_height_rec(node.left)
+        right_h=self.get_height(node.right)
+        return max(left_h,right_h)+1
