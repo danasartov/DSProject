@@ -112,7 +112,7 @@ class AVLTree(object):
                 node = node.left
             else:
                 node = node.right
-        search_time += 2
+        search_time += 1
         
         new_node = AVLNode(key, val)
         new_node.left = self.virtual_node
