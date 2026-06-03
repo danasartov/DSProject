@@ -71,12 +71,12 @@ class AVLTree(object):
         while node.value is not None:
             search_time += 1
             if node.key == key:
-                return node, 0
+                return node, search_time
             elif node.key > key:
                 node = node.left
             else:
                 node = node.right
-        return None, -1
+        return None, search_time + 1
 
     """inserts a new node into the dictionary with corresponding key and value (starting at the root)
 
