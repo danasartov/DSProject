@@ -344,7 +344,12 @@ class AVLTree(object):
     """
 
     def size(self):
-        return -1
+        return self.size_rec(self.root)
+    
+    def size_rec(self,node):
+        if node is None or not node.is_real_node():
+            return 0
+        return self.size_rec(node.left)+self.size_rec(node.right)+1
 
     """returns the root of the tree representing the dictionary
 
