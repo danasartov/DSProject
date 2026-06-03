@@ -66,9 +66,11 @@ class AVLTree(object):
     """
 
     def search(self, key):
+        if self.root is None:
+            return None, 1
         node = self.root
         search_time = 0
-        while node.value is not None:
+        while node.is_real_node():
             search_time += 1
             if node.key == key:
                 return node, search_time
@@ -174,7 +176,6 @@ class AVLTree(object):
     """
 
     def delete(self, node):
-
         # if node is a leave
         if node.left.key is None and node.right.key is None:
             # if node is root
@@ -194,7 +195,7 @@ class AVLTree(object):
                     self.balance_up(parent)
         
         # if node has one right son
-        if node.left.key is None and node.right.key is not None:
+        elif node.left.key is None and node.right.key is not None:
             if node.parent is None: # if node is root
                 self.root = node.right
                 del node
@@ -211,7 +212,7 @@ class AVLTree(object):
                     self.balance_up(parent)
 
         # if node has one left son           
-        if node.left.key is not None and node.right.key is None:
+        elif node.left.key is not None and node.right.key is None:
             if node.parent is None: # if node is root
                 self.root = node.left
                 del node
@@ -229,7 +230,7 @@ class AVLTree(object):
                     
 
         # if node has 2 sons
-        if node.left.key is not None and node.right.key is not None:
+        elif node.left.key is not None and node.right.key is not None:
             successor = successor = node.right
             while successor.left.key is not None:
                 successor = successor.left
@@ -253,17 +254,36 @@ class AVLTree(object):
                 self.balance_up(successor_parent)
 
 
-
+    def get_BF(self, node):
+        if not node.is_real_node():
+            return 0
+        else:
+            if node.left.is_real_node() and node.right.is_real_node():
+                print("all real nodes")
+                return node.left.height - node.right.height
+                
+            elif not node.left.is_real_node() and not node.right.is_real_node():
+                return 0
+            else:
+                print("one real node")
+                return 1
         
     def balance_up(self, A, until_root = True):
-        while A != self.root:
-            A_BF = A.left.height - A.right.height
+        while True:
+            A_BF = self.get_BF(A)
 
             if (A_BF in [-1,0,1]) and not until_root: # A BF is ok and we don't want to continue up to root
                 return
             
-            A_left_son_BF = A.left.left.height - A.left.right.height
-            A_right_son_BF = A.right.left.height - A.right.right.height
+            if A.left.is_real_node():
+                A_left_son_BF = self.get_BF(A.left)
+            else:
+                A_left_son_BF = 0
+            if A.right.is_real_node():
+                A_right_son_BF = self.get_BF(A.right)
+            else:
+                A_right_son_BF = 0
+
             if A_BF == 2:
                 if A_left_son_BF == -1:
                     self.left_rotation(A.left)
@@ -276,7 +296,13 @@ class AVLTree(object):
                     self.left_rotation(A)
                 else: 
                     self.left_rotation(A)
+            if A.parent is self.root:
+                break
+
+            if A is self.root:
+                break
             A = A.parent
+            
 
     def left_rotation(self, A):
         B = A.right
@@ -287,6 +313,11 @@ class AVLTree(object):
             A.parent.left = B
         else: # A is right son
             A.parent.right = B
+        
+        # Update parents
+        B.parent = A.parent
+        A.parent = B
+
         A.right = B.left
         B.left = A
 
@@ -305,6 +336,10 @@ class AVLTree(object):
             A.parent.right = B
         A.left = B.right
         B.right = A
+
+        # Update parents
+        B.parent = A.parent
+        A.parent = B
 
         # update heights
         A.height = max(A.left.height, A.right.height) + 1
