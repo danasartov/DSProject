@@ -259,13 +259,11 @@ class AVLTree(object):
             return 0
         else:
             if node.left.is_real_node() and node.right.is_real_node():
-                print("all real nodes")
                 return node.left.height - node.right.height
                 
             elif not node.left.is_real_node() and not node.right.is_real_node():
                 return 0
             else:
-                print("one real node")
                 return 1
         
     def balance_up(self, A, until_root = True):
@@ -402,10 +400,10 @@ class AVLTree(object):
         """
 
     def get_height(self):
-        if self.root() is None:
+        if self.root is None:
             return -1
         if self.is_avl:
-            return self.root().height
+            return self.root.height
         return self.get_height_rec(self.root)
         
 
