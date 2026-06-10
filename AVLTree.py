@@ -305,6 +305,10 @@ class AVLTree(object):
     def left_rotation(self, A):
         B = A.right
         # if A is root
+        A.right = B.left
+        if A.right.is_real_node():
+            A.right.parent = A
+
         if A.parent is None: 
             self.root = B
         elif A.parent.left == A: # A is left son
@@ -316,7 +320,7 @@ class AVLTree(object):
         B.parent = A.parent
         A.parent = B
 
-        A.right = B.left
+        
         B.left = A
 
         # update heights
@@ -326,13 +330,15 @@ class AVLTree(object):
     def right_rotation(self, A): # A BF is +2
         B = A.left
         # if A is root
+        A.left = B.right
+        if A.left.is_real_node():
+            A.left.parent = A
         if A.parent is None: 
             self.root = B
         elif A.parent.left == A: # A is left son
             A.parent.left = B
         else: # A is right son
             A.parent.right = B
-        A.left = B.right
         B.right = A
 
         # Update parents
