@@ -9,7 +9,6 @@
 
 import unittest
 from AVLTree import AVLTree
-from AVLTree import AVLTree
 
 GRADE = 0
 MAX_GRADE = 10

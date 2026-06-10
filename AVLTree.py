@@ -257,11 +257,22 @@ class AVLTree(object):
     def get_BF(self, node):
         if node is None or not node.is_real_node():
             return 0
-        return node.left.height-node.right.height
+        else:
+            if node.left.is_real_node() and node.right.is_real_node():
+                return node.left.height - node.right.height
+                
+            elif not node.left.is_real_node() and not node.right.is_real_node():
+                return 0
+            
+            elif not node.left.is_real_node() and  node.right.is_real_node(): # only right son
+                return - node.right.height - 1
+            
+            else:
+                return node.left.height + 1
+        
     def balance_up(self, A, until_root = True):
         while True:
             A_BF = self.get_BF(A)
-
             if (A_BF in [-1,0,1]) and not until_root: # A BF is ok and we don't want to continue up to root
                 return
             
@@ -276,19 +287,30 @@ class AVLTree(object):
 
             if A_BF == 2:
                 if A_left_son_BF == -1:
+                    pointer = A.left.right
                     self.left_rotation(A.left)
                     self.right_rotation(A)
+                    if pointer.is_real_node():
+                        pointer.parent = A
+                        A.left = pointer
+                        A.parent.left.right = self.virtual_node
                 else: 
                     self.right_rotation(A)
             if A_BF == -2:
                 if A_right_son_BF == 1:
+                    pointer = A.right.left
                     self.right_rotation(A.right)
                     self.left_rotation(A)
+                    if pointer.is_real_node():
+                        pointer.parent = A
+                        A.left = pointer
+                        A.parent.right.left = self.virtual_node
                 else: 
                     self.left_rotation(A)
             if A.parent is self.root:
                 break
 
+            
             if A is self.root:
                 break
             A = A.parent
