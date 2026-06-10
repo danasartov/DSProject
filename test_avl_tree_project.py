@@ -243,6 +243,7 @@ class TestAVLProjectAPI(unittest.TestCase):
                 node, _ = t.search(k)
                 self.assertTrue(is_real(node), f"Key {k} should exist before deletion")
                 t.delete(node)
+                print(k)
                 expected.pop(k)
                 self.assertIsNone(t.search(k)[0], f"Key {k} should not exist after deletion")
                 assert_bst_structure(self, t, expected, check_avl=True, check_heights=True)

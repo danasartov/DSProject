@@ -189,6 +189,7 @@ class AVLTree(object):
                 else:
                     parent.right = self.virtual_node
                 del node
+                parent.height = max(parent.right.height, parent.left.height) + 1
 
                 # if tree is AVL, do rotations and height updates
                 if self.is_avl:
@@ -202,9 +203,11 @@ class AVLTree(object):
             else:
                 parent = node.parent
                 if parent.left == node: # node is left son
-                    parent.left = node.right
+                    parent.left = node.right  
                 else: # node is right son
                     parent.right = node.right
+                node.right.parent = parent
+                parent.height = max(parent.left.height, parent.right.height) + 1
                 del node
 
                 # if tree is AVL, do rotations and height updates
@@ -219,9 +222,11 @@ class AVLTree(object):
             else:
                 parent = node.parent
                 if parent.left == node: # node is left son
-                    parent.left = node.left
+                    parent.left = node.left         
                 else: # node is right son
                     parent.right = node.left
+                node.left.parent = parent
+                parent.height = max(parent.left.height, parent.right.height) + 1
                 del node
 
                 # if tree is AVL, do rotations and height updates
@@ -248,6 +253,8 @@ class AVLTree(object):
             elif successor.right.key is None: # successor is a leaf
                 successor.parent.left = self.virtual_node
                 del successor
+            
+            successor_parent.height = max(successor_parent.right.height, successor_parent.left.height) + 1
                 
             # if tree is AVL, do rotations and height updates
             if self.is_avl:    
@@ -258,37 +265,57 @@ class AVLTree(object):
         if node is None or not node.is_real_node():
             return 0
         return node.left.height - node.right.height
-    
+        
     def balance_up(self, A, until_root = True):
         while A is not None and A.is_real_node():
-            old_height=A.height
-            A.height=max(A.left.height,A.right.height)+1
             A_BF = self.get_BF(A)
-            next_node=A.parent
-            if abs(A_BF)<2:
-                if old_height==A.height :
+
+            if abs(A_BF)<2 and not until_root: # A BF is ok and we don't want to continue up to root
                     return
+            
+            if A.left.is_real_node():
+                A_left_son_BF = self.get_BF(A.left)
             else:
-                if A_BF==2:
-                    left_child=A.left
-                    if self.get_BF(left_child)==-1:
-                        self.left_rotation(A.left)
-                        self.right_rotation(A)
-                    else:
-                        self.right_rotation(A)
-                    next_node=A.parent.parent
-                
-                elif A_BF==-2:
-                    right_child=A.right
-                    if self.get_BF(right_child)==1:
-                        self.right_rotation(A.right)
-                        self.left_rotation(A)
-                    else:
-                        self.left_rotation(A)
-                    next_node=A.parent.parent
-                if not until_root:
-                    return
-            A=next_node
+                A_left_son_BF = 0
+            if A.right.is_real_node():
+                A_right_son_BF = self.get_BF(A.right)
+            else:
+                A_right_son_BF = 0
+
+
+            if A_BF == 2:
+                if A_left_son_BF == -1:
+                    self.left_rotation(A.left)
+                    self.right_rotation(A)
+                if A_left_son_BF == 1:
+                    self.right_rotation(A)
+                if A_left_son_BF == 0: # only possible in delete
+                    pointer = A.left.right
+                    pointer.parent.right = self.virtual_node
+                    self.right_rotation(A)
+                    pointer.parent = A
+                    A.left = pointer
+                    A.parent.left.right = self.virtual_node
+
+            if A_BF == -2:
+                if A_right_son_BF == 1:
+                    self.right_rotation(A.right)
+                    self.left_rotation(A)
+                if A_right_son_BF == -1:
+                    self.left_rotation(A)
+                if A_right_son_BF == 0:
+                    pointer = A.right.left
+                    self.left_rotation(A)
+                    pointer.parent = A
+                    A.right = pointer
+                    A.parent.right.left = self.virtual_node
+                    
+
+            if A is self.root:
+                A.height = max(A.left.height, A.right.height) + 1
+
+                break
+            A = A.parent
             
 
     def left_rotation(self, A):

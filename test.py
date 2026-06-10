@@ -14,10 +14,16 @@ for k in keys:
 node_30 = t.root.left
 node_20 = t.root.left.left
 node_60 = t.root.right.left
+node_50 = t.root
 t.delete(node_20)
 t.delete(node_60)
+t.delete(node_30)
 
-print(t.root.right.key) #70
-print(t.root.right.left.key)
-print(t.root.right.left.parent.key) #70
+#t.delete(node_50)
+
+print(t.root.key)
+print(t.root.left.height)
+
 print(" ")
+print(t.get_height())
+
