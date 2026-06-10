@@ -16,10 +16,6 @@ TEST_COUNT = 9
 POINTS_PER_TEST = MAX_GRADE / TEST_COUNT
 
 T = AVLTree(True)
-T.insert(10, "10")
-print(type(T.root))
-if isinstance(T.root, AVLTree.AVLNode):
-    print("ya")
 
 
 class BasicStudentTester(unittest.TestCase):

@@ -1,29 +1,41 @@
 from AVLTree import AVLTree
 
+def print_tree():
+    print("           " + str(t.root.key))
+    print("        " + str(t.root.left.key) + "        " + str(t.root.right.key))
+    #print(str(t.root.left.left.key) + "   " + str(t.root.left.right.key) + "   " + str(t.root.right.left.key) + "   " + str(t.root.right.right.key))
+    print(" ")
+
 t = AVLTree(True)
-keys = [50, 30, 70, 20, 40, 60, 80, 35, 45, 65]
-expected = {}
-nodes = {}
-for k in keys:
-    node, *_ = t.insert(k, str(k))
-    expected[k] = str(k)
-    nodes[k] = node
+t.insert(1,"1")
+t.insert(0,"0")
+t.insert(3,"3")
+t.insert(2,"2")
+t.insert(4,"4")
 
-#assert_bst_structure(self, t, expected, check_avl=True, check_heights=True)
+print_tree()
+print(t.avl_to_list())
 
-node_30 = t.root.left
-node_20 = t.root.left.left
-node_60 = t.root.right.left
-node_50 = t.root
-t.delete(node_20)
-t.delete(node_60)
-t.delete(node_30)
+print("delete " + str(t.root.left.key))
+t.delete(t.root.left)
+print_tree()
 
-#t.delete(node_50)
+print("delete " + str(t.root.key))
+t.delete(t.root)
+print_tree()
 
-print(t.root.key)
-print(t.root.left.height)
+print("delete " + str(t.root.left.key))
+t.delete(t.root.left)
+print_tree()
+print(t.root.height)
+print(t.root.right.height)
 
-print(" ")
-print(t.get_height())
+
+
+
+
+
+
+
+
 
