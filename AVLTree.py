@@ -255,17 +255,9 @@ class AVLTree(object):
 
 
     def get_BF(self, node):
-        if not node.is_real_node():
+        if node is None or not node.is_real_node():
             return 0
-        else:
-            if node.left.is_real_node() and node.right.is_real_node():
-                return node.left.height - node.right.height
-                
-            elif not node.left.is_real_node() and not node.right.is_real_node():
-                return 0
-            else:
-                return 1
-        
+        return node.left.height-node.right.height
     def balance_up(self, A, until_root = True):
         while True:
             A_BF = self.get_BF(A)
