@@ -410,6 +410,6 @@ class AVLTree(object):
     def get_height_rec(self, node):
         if not node.is_real_node():
             return -1
-        left_h= self.get_height_rec(node.left)
-        right_h=self.get_height(node.right)
+        left_h = self.get_height_rec(node.left)
+        right_h = self.get_height_rec(node.right)
         return max(left_h,right_h)+1
