@@ -231,7 +231,7 @@ class AVLTree(object):
 
         # if node has 2 sons
         elif node.left.key is not None and node.right.key is not None:
-            successor = successor = node.right
+            successor = node.right
             while successor.left.key is not None:
                 successor = successor.left
 
@@ -245,7 +245,7 @@ class AVLTree(object):
                 successor.parent.left = successor.right
                 del successor
 
-            if successor.right.key is None: # successor is a leaf
+            elif successor.right.key is None: # successor is a leaf
                 successor.parent.left = self.virtual_node
                 del successor
                 
