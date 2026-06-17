@@ -198,6 +198,7 @@ class AVLTree(object):
         elif node.left.key is None and node.right.key is not None:
             if node.parent is None: # if node is root
                 self.root = node.right
+                self.root.parent = None
                 del node
             else:
                 parent = node.parent
@@ -206,7 +207,6 @@ class AVLTree(object):
                 else: # node is right son
                     parent.right = node.right
                 node.right.parent = parent
-                parent.height = max(parent.left.height, parent.right.height) + 1
                 del node
 
                 # if tree is AVL, do rotations and height updates
@@ -217,6 +217,7 @@ class AVLTree(object):
         elif node.left.key is not None and node.right.key is None:
             if node.parent is None: # if node is root
                 self.root = node.left
+                self.root.parent = None
                 del node
             else:
                 parent = node.parent
@@ -225,7 +226,6 @@ class AVLTree(object):
                 else: # node is right son
                     parent.right = node.left
                 node.left.parent = parent
-                parent.height = max(parent.left.height, parent.right.height) + 1
                 del node
 
                 # if tree is AVL, do rotations and height updates
@@ -248,12 +248,14 @@ class AVLTree(object):
                 successor_parent.left = successor.right
             else:
                 successor_parent.right = successor.right
+
+            if successor.right.is_real_node():
+                successor.right.parent = successor_parent
+            
             del successor
 
-            
             # if tree is AVL, do rotations and height updates
             if self.is_avl:    
-                successor_parent.height = max(successor_parent .right.height, successor_parent.left.height) + 1
                 self.balance_up(successor_parent)
 
 
@@ -263,10 +265,9 @@ class AVLTree(object):
         return node.left.height - node.right.height
         
     def balance_up(self, A, until_root = True):
+        while A is not None and A.is_real_node():
+            A.height = max(A.left.height, A.right.height) + 1
 
-        A.height = max(A.left.height, A.right.height) + 1
-
-        while True:
             A_BF = self.get_BF(A)
 
             if abs(A_BF) < 2 and not until_root: # A BF is ok and we don't want to continue up to root
@@ -296,10 +297,6 @@ class AVLTree(object):
                     self.left_rotation(A)
                 else:
                     self.left_rotation(A)
-  
-
-            if A is self.root:
-                break
 
             A = A.parent
             

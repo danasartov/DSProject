@@ -1,38 +1,14 @@
 from AVLTree import AVLTree
 
-def print_tree():
-    print("           " + str(t.root.key))
-    print("        " + str(t.root.left.key) + "        " + str(t.root.right.key))
-    #print(str(t.root.left.left.key) + "   " + str(t.root.left.right.key) + "   " + str(t.root.right.left.key) + "   " + str(t.root.right.right.key))
-    print(" ")
+n = 100
 
-t = AVLTree(True)
-t.insert(1,"1")
-t.insert(0,"0")
-t.insert(3,"3")
-t.insert(2,"2")
-t.insert(4,"4")
+###### experiment 1 ######
+t1 = AVLTree(False)
 
-print_tree()
-print(t.avl_to_list())
+for i in range(n):
+    t1.insert(i,str(i))
 
-print("delete " + str(t.root.left.key))
-t.delete(t.root.left)
-print_tree()
-
-print("delete " + str(t.root.key))
-t.delete(t.root)
-print_tree()
-
-print("delete " + str(t.root.left.key))
-t.delete(t.root.left)
-print_tree()
-print(t.root.height)
-print(t.root.right.height)
-
-
-
-
+print("For test 1 with n = " + str(n) + " the size is: " + str(t1.size()) )
 
 
 
