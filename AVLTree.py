@@ -405,14 +405,22 @@ class AVLTree(object):
     def get_height(self):
         if self.root is None:
             return -1
+
         if self.is_avl:
             return self.root.height
-        return self.get_height_rec(self.root)
-        
 
-    def get_height_rec(self, node):
-        if not node.is_real_node():
-            return -1
-        left_h = self.get_height_rec(node.left)
-        right_h = self.get_height_rec(node.right)
-        return max(left_h,right_h)+1
+        max_height = -1
+        stack = [(self.root, 0)]
+
+        while stack:
+            node, depth = stack.pop()
+
+            if node is None or not node.is_real_node():
+                continue
+
+            max_height = max(max_height, depth)
+
+            stack.append((node.left, depth + 1))
+            stack.append((node.right, depth + 1))
+
+        return max_height
