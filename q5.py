@@ -1,37 +1,50 @@
-from AVLTree import AVLTree
+from FinalSubmission.AVLTree import AVLTree
 
-def median_order(arr):
-    """Returns insertion order that creates a balanced tree."""
-    if not arr:
-        return []
-    mid = len(arr) // 2
-    return [arr[mid]] + median_order(arr[:mid]) + median_order(arr[mid + 1:])
+def perfect_tree_order(start, end):
+    """
+    Returns insertion order by levels for a perfect BST
+    with keys start,...,end.
+    Assumes number of keys is 2^(h+1)-1.
+    """
+    order = []
+    queue = [(start, end)]
 
-def create_tree(n):
-    # Create perfect AVL tree:
-    #           3
-    #       /       \
-    #      1         5
-    #    /   \     /   \
-    #   0     2   4     6
-    
+    while queue:
+        left, right = queue.pop(0)
+
+        if left > right:
+            continue
+
+        mid = (left + right) // 2
+        order.append(mid)
+
+        queue.append((left, mid - 1))
+        queue.append((mid + 1, right))
+
+    return order
+
+def create_perfect_avl(height):
+    """
+    Creates a perfect AVL tree of height `height`.
+    If height of leaf is 0, then number of nodes is 2^(height+1)-1.
+    """
+    n = 2 ** (height + 1) - 1
     tree = AVLTree(True)
 
-    keys = list(range(1, n + 1))
-    for key in median_order(keys):
+    for key in perfect_tree_order(1, n):
         tree.insert(key, str(key))
 
     return tree
 
-def insert_delete(n, node_num):
-    tree = create_tree(node_num)
+def insert_delete(repetitions, h):
+    tree = create_perfect_avl(h)
 
     total_search_time = 0
     total_rotations = 0
     total_height_changes = 0
 
-    for _ in range(1,n):
-        node, search_time, rotations, height_changes = tree.insert(node_num, str(node_num))
+    for _ in range(repetitions):
+        node, search_time, rotations, height_changes = tree.insert(2 ** h, str(2 ** h))
         tree.delete(node)
 
         total_search_time += search_time
@@ -40,28 +53,23 @@ def insert_delete(n, node_num):
     
     return total_search_time, total_rotations, total_height_changes
 
+def run_insert_delete(height):
+    for i in range(1, 6):
+        repetitions = 300 * (2 ** i)
+        print(f"Running experiment for n = {repetitions}, height {height}..")
+        search_time, rotations, height_changes = insert_delete(repetitions, height)
+
+        print("For n = " + str(repetitions) + " we get: ")
+        print("search time: " + str(search_time) + " rotations: " + str(rotations) + " height changes: " + str(height_changes) )
+        print("where height_changes/repetitions is: " + str(height_changes/repetitions))
+        print(" ")
 
 def main():
-    
-    for i in range(1, 6):
-        n = 300 * (2 ** i)
-        print(f"Running experiment for n = {n}, nodes number 7...")
-        search_time, rotations, height_changes = insert_delete(n, 7)
+    # For height 5, we need 2^0 + 2^1 + .. + 2^5 = 63 nodes
+    run_insert_delete(5)
 
-        print("For n = " + str(n) + " we get: ")
-        print("search time: " + str(search_time) + " rotations: " + str(rotations) + " height changes: " + str(height_changes) )
-        print("where height_changes/n is: " + str(height_changes/n))
-        print(" ")
-
-    for i in range(1, 5):
-        n = 300 * (2 ** i)
-        print(f"Running experiment for n = {n}...")
-        search_time, rotations, height_changes = insert_delete(n, 63)
-
-        print("For n = " + str(n) + " we get: ")
-        print("search time: " + str(search_time) + " rotations: " + str(rotations) + " height changes: " + str(height_changes) )
-        print("where height_changes/n is: " + str(height_changes/n))
-        print(" ")
+    # For height 10, we need 2^0 + 2^1 + .. + 2^10 = 2047 nodes
+    run_insert_delete(10)
 
 if __name__ == "__main__":
     main()

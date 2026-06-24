@@ -1,0 +1,9 @@
+Full Name in hebrew 1: דנה שרטוב
+Full Name in English 1: Dana Sartov
+id 1: 322436437
+Email 1: danasartov@mail.tau.ac.il
+
+Full Name in hebrew 2: טל טלר 
+Full Name in English 2: 
+id 2: 
+Email 2: @mail.tau.ac.il

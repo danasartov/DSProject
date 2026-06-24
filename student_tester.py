@@ -8,7 +8,7 @@
 '''
 
 import unittest
-from AVLTree import AVLTree
+from FinalSubmission.AVLTree import AVLTree
 
 GRADE = 0
 MAX_GRADE = 10

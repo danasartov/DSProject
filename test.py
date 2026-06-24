@@ -1,6 +1,6 @@
 import time
 import matplotlib.pyplot as plt
-from AVLTree import AVLTree
+from FinalSubmission.AVLTree import AVLTree
 import random
 
 
