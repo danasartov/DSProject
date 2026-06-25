@@ -1,9 +1,9 @@
 # id1: 322436437
 # name1: Dana Sartov
 # username1: danasartov
-# id2: 
-# name2:
-# username2:
+# id2: 213057102
+# name2: Tal Taler
+# username2: TalTaler
 
  
 """A class representing a node in an AVL tree"""

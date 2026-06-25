@@ -4,6 +4,6 @@ id 1: 322436437
 Email 1: danasartov@mail.tau.ac.il
 
 Full Name in hebrew 2: טל טלר 
-Full Name in English 2: 
-id 2: 
-Email 2: @mail.tau.ac.il
+Full Name in English 2: Tal Taler
+id 2: 213057102
+Email 2: taltaler@mail.tau.ac.il
